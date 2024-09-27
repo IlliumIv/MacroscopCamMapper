@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MacroscopCamMapper": {
+      "commandName": "Project",
+      "commandLineArgs": " --export out.csv"
+    }
+  }
+}
