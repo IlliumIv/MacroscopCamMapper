@@ -17,9 +17,10 @@ public class Connection
             }),
             _ => new HttpClient(),
         };
-
-        macroscopClient.BaseAddress = new Uri($"{(Parameters.UseSSL.Value ? "https" : "http")}://{Parameters.Address.Value}:{Parameters.Port.Value}");
-        var authString = $"{Parameters.Login.Value}:{CreateMD5(Parameters.Password.Value)}";
+        
+        macroscopClient.BaseAddress = new Uri($"http{(Parameters.UseSSL.Value ? "s" : "")}://{Parameters.Address.Value}:{Parameters.Port.Value}");
+        var authString = $"{Parameters.Login.Value}:" +
+            $"{(Parameters.IsActiveDirectoryUser.Value ? Parameters.Password.Value : CreateMD5(Parameters.Password.Value))}";
         message.Headers.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes(authString))}");
 
         response = macroscopClient.Send(message);

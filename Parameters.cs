@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reflection;
 using System.Text;
 
 namespace MacroscopCamMapper;
@@ -37,9 +38,14 @@ public static class Parameters
         new(prefixes: ["--ssl"], value: false, format: string.Empty,
             description: "Connect over HTTPS.");
 
+    public static Parameter<bool> IsActiveDirectoryUser { get; } =
+        new(prefixes: ["--active-directory"], value: false, format: string.Empty,
+            description: "Specify that is Active Directory user.");
+
     public static Parameter<string> Login { get; } =
         new(prefixes: ["--login", "-l"], value: "root", format: "string",
-            description: "Login. Default value is \"root\".");
+            description: $"Login. Default value is \"root\". " +
+            $"Must specify {string.Join(" or ", IsActiveDirectoryUser.Prefixes)} if using a Active Directory user.");
 
     public static Parameter<string> Password { get; } =
         new(prefixes: ["--password"], value: string.Empty, format: "string",
@@ -81,15 +87,6 @@ public static class Parameters
             description: $"Columns delimeter." +
             $" Default value is \"{File_Culture.Value.TextInfo.ListSeparator}\"." +
             $" It depends on culture, current selected culture is {File_Culture.Value.DisplayName}.");
-
-    private static readonly Parameter[] _parameters =
-    [
-        Address, Port, UseSSL, Login, Password, Column_CameraName, Column_ChannelId, Column_Latitude,
-        Column_Longitude, Column_OnMap, Column_Delimeter, File_Encoding, ShowEncodings,
-        File_Culture, ShowCultures, Export, ShowVerbose, ShowHelpMessage
-    ];
-
-    public static Parameter[] GetAll() => _parameters;
 
     public static HashSet<string> Parse(string[] args)
     {
@@ -161,6 +158,12 @@ public static class Parameters
                     if (UseSSL.Prefixes.Any(p => p[1..] == arg))
                     {
                         UseSSL.Value = true;
+                        continue;
+                    }
+
+                    if (IsActiveDirectoryUser.Prefixes.Any(p => p[1..] == arg))
+                    {
+                        IsActiveDirectoryUser.Value = true;
                         continue;
                     }
 
@@ -265,7 +268,9 @@ public static class Parameters
         var description = $"Usage: {nameof(MacroscopCamMapper)} <files>";
         var indent = description.Length;
 
-        var parameters = GetAll();
+        var parameters = typeof(Parameters)
+             .GetFields(BindingFlags.NonPublic | BindingFlags.Static)
+             .Select(f => (Parameter)f.GetValue(null)).ToArray();
 
         for (var i = 0; i < parameters.Length; i++)
         {
@@ -290,15 +295,10 @@ public static class Parameters
 
         Console.WriteLine();
 
-        var l = parameters.Max(p => (string.Join(", ", p.Prefixes) + p.Format + 1).Length);
-        var m = parameters.Min(p => (string.Join(", ", p.Prefixes) + p.Format).Length);
-        var d = l - m;
-        indent = l + d;
-
         foreach (var param in parameters)
         {
             Console.WriteLine(string.Format(
-                $" {{0,{-indent}}}{{1}}{Environment.NewLine}", $"{string.Join(", ", param.Prefixes)}" +
+                $" {{0,{-(parameters.Max(p => (string.Join(", ", p.Prefixes) + p.Format).Length) + 5)}}}{{1}}", $"{string.Join(", ", param.Prefixes)}" +
                 $"{(param.Format == string.Empty ? "" : $" <{param.Format}>")}", param.Description));
         }
     }

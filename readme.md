@@ -6,7 +6,8 @@ Usage: `.\MacroscopCamMapper input.csv`
 `--server, -s <url>` - Server address. Default value is 127.0.0.1.\
 `--port, -p <number>` - Server port. Default value is 8080.\
 `--ssl` - Connect over HTTPS.\
-`--login, -l <string>` - Login. Default value is "root".\
+`--login, -l <string>` - Login. Default value is "root". Must specify `--active-directory` if using a Active Directory user.\
+`--active-directory` - Specify that is Active Directory user.\
 `--password <string>` - Password. Default value is empty string.\
 `--names <string>` - Column header contains names of cameras. Default value is "Имя камеры".\
 `--channel-id <string>` - Column header contains ids of channels. Default value is "Channel Id".\
@@ -31,7 +32,8 @@ Usage: `.\MacroscopCamMapper input.csv`
 `--server, -s <url>` - Адрес сервера. Значение по умолчанию 127.0.0.1.\
 `--port, -p <number>` - Порт сервера. Значение по умолчанию 8080.\
 `--ssl` - Подключение по HTTPS.\
-`--login, -l <string>` - Логин. Значение по умолчанию "root".\
+`--login, -l <string>` - Логин. Значение по умолчанию "root". Следует указать `--active-directory` если используется учётная запись Active Directory.\
+`--active-directory` - Указывает, что используется учётная запись Active Directory.\
 `--password <string>` - Пароль. Значение по умолчанию - пустая строка.\
 `--names <string>` - Заголовок столбца, который содержит имена камер. Значение по умолчанию "Имя камеры".\
 `--channel-id <string>` - Заголовок столбца, который содержит channelId. Значение по умолчанию "Channel Id".\
