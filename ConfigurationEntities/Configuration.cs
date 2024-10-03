@@ -37,7 +37,7 @@ public class Configuration
                 MissingFieldFound = null,
             };
 
-            using var writer = File.AppendText(path);
+            using var writer = new StreamWriter(path, false, Parameters.File_Encoding.Value);
             using var csv = new CsvWriter(writer, csvConfig);
             csv.Context.RegisterClassMap<CameraMap>();
 

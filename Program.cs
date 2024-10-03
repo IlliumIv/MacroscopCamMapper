@@ -13,7 +13,8 @@ public class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        var pathes = Handler.Parse(args, $"Usage: {nameof(MacroscopCamMapper)} <files>");
+        var pathes = ArgumentsHandler.Parse(args, $"Usage: {nameof(MacroscopCamMapper)} <files>",
+            "See https://github.com/IlliumIv/MacroscopCamMapper/ to check new versions, report bugs and ask for help.");
 
         var csvConfig = new CsvConfiguration(Parameters.File_Culture.Value)
         {

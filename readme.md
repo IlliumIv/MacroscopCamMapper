@@ -16,11 +16,11 @@ Usage: `.\MacroscopCamMapper input.csv`
 `--on-map <string>` - Column header sets IsOnMap flag. Default value is "Размещена на карте". Valid values: [true, yes, да]; in any letter case. Any other values either lack of value automatically set IsOnMap flag to false.\
 `--delimeter <string>` - Columns delimeter. It depends on selected culture.\
 `--encoding <string>` - File encoding. Default value is UTF-8. To see all possible encodings specify `--show-encodings`.\
-`--show-encodings` - Show all possible encodings and exit.\
 `--culture <string>` - File culture. Default value is InvariantCulture. To see all possible cultures specify `--show-cultures`.\
+`--show-encodings` - Show all possible encodings and exit.\
 `--show-cultures` - Show all possible cultures and exit.\
-`--export <path>` - Export to file and exit.\
 `--verbose, -v` - Show verbose output.\
+`--export <path>` - Export to file and exit. Overwrite file if it exists.\
 `--help, -h, -?` - Show this message and exit.
 
 ---
@@ -42,9 +42,9 @@ Usage: `.\MacroscopCamMapper input.csv`
 `--on-map <string>` - Заголовок столбца, задающий значение флагу IsOnMap. Значение по умолчанию "Размещена на карте". Валидные значения: [true, yes, да]; в любом регистре. Любые другие значения, равно как и его отсутствие,  автоматически установит флаг IsOnMap в значение false.\
 `--delimeter <string>` - Разделитель столбцов. Зависит от выбранной культуры.\
 `--encoding <string>` - Кодировка файла. Значение по умолчанию UTF-8. Для просмотра перечня доступных кодировок укажите `--show-encodings`.\
-`--show-encodings` - Выводит перечень всех доступных кодировок и завершает работу.\
 `--culture <string>` - Культура файла. Значение по умолчанию InvariantCulture. Для просмотра перечня доступных культур укажите `--show-cultures`.\
+`--show-encodings` - Выводит перечень всех доступных кодировок и завершает работу.\
 `--show-cultures` - Выводит перечень всех доступных культур и завершает работу.\
-`--export <path>` - Экспортирует каналы в файл и завершает работу.\
 `--verbose, -v` - Выводит подробную информацию о результате исполнения запроса на изменение каналов.\
+`--export <path>` - Экспортирует каналы в файл и завершает работу. Перезаписывает существующий файл.\
 `--help, -h, -?` - Выводит это сообщение и завершает работу.

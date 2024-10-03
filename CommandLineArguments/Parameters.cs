@@ -12,7 +12,7 @@ public static class Parameters
             sortingOrder: 11,
             parser: (args) =>
             {
-                Handler.ShowHelp();
+                ArgumentsHandler.ShowHelp();
                 Environment.Exit(0);
                 return args[1..];
             });
@@ -49,7 +49,7 @@ public static class Parameters
 
     public static Parameter Export { get; } =
         new(prefixes: ["--export"],
-            description: "Export to file and exit.",
+            description: "Export to file and exit. Overwrite file if it exists.",
             format: "path",
             sortingOrder: 10,
             parser: (args) =>

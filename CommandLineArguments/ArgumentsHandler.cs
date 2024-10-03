@@ -2,13 +2,15 @@
 
 namespace MacroscopCamMapper.CommandLineArguments;
 
-public class Handler
+public static class ArgumentsHandler
 {
     private static string _usageDescription = string.Empty;
+    private static string _footerDescription = string.Empty;
 
-    public static HashSet<string> Parse(string[] args, string usageDescription)
+    public static HashSet<string> Parse(string[] args, string usageDescription = "", string footerDescription = "")
     {
         _usageDescription = usageDescription;
+        _footerDescription = footerDescription;
 
         if (args.Length == 0)
         {
@@ -105,5 +107,8 @@ public class Handler
                     .Length) + 5)}}}{{1}}", $"{string.Join(", ", param.Prefixes)}" +
                 $"{(param.Format == string.Empty ? "" : $" <{param.Format}>")}", param.Description));
         }
+
+        if (!string.IsNullOrEmpty(_footerDescription))
+            Console.WriteLine($"\n{_footerDescription}");
     }
 }
