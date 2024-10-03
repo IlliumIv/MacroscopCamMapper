@@ -7,24 +7,30 @@ namespace MacroscopCamMapper;
 
 public class Connection
 {
+    private static HttpClient? _macroscopClient;
+
     public static bool SendRequest(HttpRequestMessage message, out HttpResponseMessage response)
     {
-        var macroscopClient = Parameters.UseSSL.Value switch
+        _macroscopClient ??= Parameters.UseSSL.Value switch
         {
             true => new HttpClient(new HttpClientHandler()
             {
                 ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true,
                 SslProtocols = SslProtocols.Tls12
-            }),
-            _ => new HttpClient(),
+            })
+            {
+                BaseAddress = new Uri($"https://{Parameters.Address.Value}:{Parameters.Port.Value}")
+            },
+            _ => new HttpClient()
+            {
+                BaseAddress = new Uri($"http://{Parameters.Address.Value}:{Parameters.Port.Value}")
+            },
         };
-        
-        macroscopClient.BaseAddress = new Uri($"http{(Parameters.UseSSL.Value ? "s" : "")}://{Parameters.Address.Value}:{Parameters.Port.Value}");
+
         var authString = $"{Parameters.Login.Value}:" +
             $"{(Parameters.IsActiveDirectoryUser.Value ? Parameters.Password.Value : CreateMD5(Parameters.Password.Value))}";
         message.Headers.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes(authString))}");
-
-        response = macroscopClient.Send(message);
+        response = _macroscopClient.Send(message);
 
         try
         {
