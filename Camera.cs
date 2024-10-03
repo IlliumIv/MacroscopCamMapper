@@ -1,16 +1,17 @@
 ﻿using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
+using MacroscopCamMapper.CommandLineArguments;
 using System.Globalization;
 
 namespace MacroscopCamMapper;
 
 public class Camera
 {
-    [Name("Имя камеры")] public string? Name { get; set; }
-    [Name("Channel Id")] public string? ChannelId { get; set; }
-    [Name("Широта")] public double Latitude { get; set; }
-    [Name("Долгота")] public double Longitude { get; set; }
-    [Name("Размещена на карте")] public string? IsOnMap { get; set; }
+    public string? Name { get; set; }
+    public string? ChannelId { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public string? IsOnMap { get; set; }
 
     public bool GetIsOnMapFlag() => IsOnMap?.ToLower() switch
     {

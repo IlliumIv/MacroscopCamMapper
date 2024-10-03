@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
+using MacroscopCamMapper.CommandLineArguments;
 using Newtonsoft.Json;
-using System.Globalization;
 
 namespace MacroscopCamMapper.ConfigurationEntities;
 
@@ -29,10 +30,16 @@ public class Configuration
     {
         if (GetConfiguration(out var configuration))
         {
-            var numberFormat = Parameters.File_Culture.Value.NumberFormat;
+            var csvConfig = new CsvConfiguration(Parameters.File_Culture.Value)
+            {
+                Delimiter = Parameters.Column_Delimeter.Value,
+                HeaderValidated = null,
+                MissingFieldFound = null,
+            };
 
             using var writer = File.AppendText(path);
-            using var csv = new CsvWriter(writer, Parameters.File_Culture.Value);
+            using var csv = new CsvWriter(writer, csvConfig);
+            csv.Context.RegisterClassMap<CameraMap>();
 
             var channels = configuration.Channels.Select(c => new Camera() {
                 Name = c.Name, ChannelId = c.Id, IsOnMap = $"{c.MapSettings.IsOnMap}",

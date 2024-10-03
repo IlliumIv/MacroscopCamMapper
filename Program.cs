@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using MacroscopCamMapper.CommandLineArguments;
 using MacroscopCamMapper.ConfigurationEntities;
 using Newtonsoft.Json;
 using System.Text;
@@ -12,9 +13,9 @@ public class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        var pathes = Parameters.Parse(args);
+        var pathes = Handler.Parse(args, $"Usage: {nameof(MacroscopCamMapper)} <files>");
 
-        var csvReaderConfig = new CsvConfiguration(Parameters.File_Culture.Value)
+        var csvConfig = new CsvConfiguration(Parameters.File_Culture.Value)
         {
             Delimiter = Parameters.Column_Delimeter.Value,
             HeaderValidated = null,
@@ -24,7 +25,7 @@ public class Program
         foreach (var path in pathes)
         {
             using var reader = new StreamReader(path, Parameters.File_Encoding.Value);
-            using var csv = new CsvReader(reader, csvReaderConfig);
+            using var csv = new CsvReader(reader, csvConfig);
             csv.Context.RegisterClassMap<CameraMap>();
 
             try

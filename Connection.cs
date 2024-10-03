@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Security.Authentication;
 using System.Text;
+using MacroscopCamMapper.CommandLineArguments;
 
 namespace MacroscopCamMapper;
 
