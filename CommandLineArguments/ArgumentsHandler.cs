@@ -9,8 +9,11 @@ public static class ArgumentsHandler
 
     public static HashSet<string> Parse(string[] args, string usageDescription = "", string footerDescription = "")
     {
-        _usageDescription = usageDescription;
-        _footerDescription = footerDescription;
+        if (string.IsNullOrEmpty(_usageDescription) && !string.IsNullOrEmpty(usageDescription))
+            _usageDescription = usageDescription;
+
+        if (string.IsNullOrEmpty(_footerDescription) && !string.IsNullOrEmpty(footerDescription))
+            _footerDescription = footerDescription;
 
         if (args.Length == 0)
         {
