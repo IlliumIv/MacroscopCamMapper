@@ -64,4 +64,3 @@ public class Connection
         return stringBuilder.ToString();
     }
 }
-

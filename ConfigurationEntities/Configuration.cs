@@ -10,7 +10,7 @@ public class Configuration
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private static dynamic JsonBody { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-   
+
     public HashSet<Channel> Channels { get; } = [];
 
     public Configuration(string jsonString)
@@ -20,7 +20,8 @@ public class Configuration
 #pragma warning restore CS8601 // Possible null reference assignment.
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        foreach (var channel in JsonBody) Channels.Add(new Channel(channel));
+        foreach (var channel in JsonBody)
+            Channels.Add(new Channel(channel));
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 
@@ -41,9 +42,13 @@ public class Configuration
             using var csv = new CsvWriter(writer, csvConfig);
             csv.Context.RegisterClassMap<CameraMap>();
 
-            var channels = configuration.Channels.Select(c => new Camera() {
-                Name = c.Name, ChannelId = c.Id, IsOnMap = $"{c.MapSettings.IsOnMap}",
-                Latitude = c.MapSettings.Latitude, Longitude = c.MapSettings.Longitude,
+            var channels = configuration.Channels.Select(c => new Camera()
+            {
+                Name = c.Name,
+                ChannelId = c.Id,
+                IsOnMap = $"{c.MapSettings.IsOnMap}",
+                Latitude = c.MapSettings.Latitude,
+                Longitude = c.MapSettings.Longitude,
             });
 
             csv.WriteRecords(channels);

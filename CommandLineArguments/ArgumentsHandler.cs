@@ -7,7 +7,7 @@ public static class ArgumentsHandler
     private static string _usageDescription = string.Empty;
     private static string _footerDescription = string.Empty;
 
-    public static HashSet<string> Parse(string[] args, string usageDescription = "", string footerDescription = "")
+    public static string[] Parse(string[] args, string usageDescription = "", string footerDescription = "")
     {
         if (string.IsNullOrEmpty(_usageDescription) && !string.IsNullOrEmpty(usageDescription))
             _usageDescription = usageDescription;
@@ -21,8 +21,6 @@ public static class ArgumentsHandler
             Environment.Exit(0);
         }
 
-        var paths = new HashSet<string>();
-
         var parameters = typeof(Parameters)
              .GetFields(BindingFlags.NonPublic | BindingFlags.Static)
              .Select(f => f.GetValue(null) as Parameter).OrderBy(p => p?.SortingOrder).ToArray();
@@ -31,11 +29,9 @@ public static class ArgumentsHandler
         {
             foreach (var p in parameters)
             {
-                if (args.Length > 0)
+                foreach(var a in args)
                 {
-                    var arg = args[0];
-
-                    if (p is not null && p.Prefixes.Any(p => p == arg))
+                    if (p is not null && p.Prefixes.Any(p => p == a))
                     {
                         args = p.ParseArgs(args);
                     }
@@ -53,17 +49,7 @@ public static class ArgumentsHandler
             Environment.Exit(1);
         }
 
-        foreach (var a in args)
-        {
-            var attrs = File.GetAttributes(a);
-
-            if (attrs.HasFlag(FileAttributes.Directory))
-                paths = [.. paths, .. Directory.GetFiles(a)];
-            else
-                paths.Add(a);
-        }
-
-        return paths;
+        return args;
     }
 
     public static void ShowHelp()
@@ -79,7 +65,8 @@ public static class ArgumentsHandler
         {
             var p = parameters[i];
 
-            if (p == null) continue;
+            if (p == null)
+                continue;
 
             var paramDesc = $"{(p.IsRequired ? "" : "[")}" +
                 $"{string.Join(", ", p.Prefixes)}" +
@@ -103,12 +90,13 @@ public static class ArgumentsHandler
 
         foreach (var param in parameters)
         {
-            if (param is null) continue;
+            if (param is null)
+                continue;
 
             Console.WriteLine(string.Format(
                 $" {{0,{-(parameters.Max(p => p is null ? 0 : (string.Join(", ", p.Prefixes) + p.Format)
                     .Length) + 5)}}}{{1}}", $"{string.Join(", ", param.Prefixes)}" +
-                $"{(param.Format == string.Empty ? "" : $" <{param.Format}>")}", param.Description));
+                $"{(param.Format == string.Empty ? "" : $" <{param.Format}>")}", param.Description()));
         }
 
         if (!string.IsNullOrEmpty(_footerDescription))

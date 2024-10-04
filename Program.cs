@@ -13,13 +13,24 @@ public class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        var pathes = ArgumentsHandler.Parse(args, $"Usage: {nameof(MacroscopCamMapper)} <files>",
+        var nonParams = ArgumentsHandler.Parse(args, $"Usage: {nameof(MacroscopCamMapper)} <files>",
             "See https://github.com/IlliumIv/MacroscopCamMapper/ to check new versions, report bugs and ask for help.");
+
+        var pathes = new HashSet<string>();
+
+        foreach (var path in nonParams)
+        {
+            var attrs = File.GetAttributes(path);
+
+            if (attrs.HasFlag(FileAttributes.Directory))
+                pathes = [.. pathes, .. Directory.GetFiles(path)];
+            else
+                pathes.Add(path);
+        }
 
         var csvConfig = new CsvConfiguration(Parameters.File_Culture.Value)
         {
             Delimiter = Parameters.Column_Delimeter.Value,
-            HeaderValidated = null,
             MissingFieldFound = null,
         };
 
@@ -86,11 +97,20 @@ public class Program
             {
                 var error = e.Message.Split(Environment.NewLine)[0];
                 var rawRecord = e?.Context?.Reader?.Parser.RawRecord;
-                var column = e?.Context?.Reader?.ColumnCount;
                 var row = e?.Context?.Reader?.Parser.Row;
 
                 Console.WriteLine($"Error on parse file. {error}{Environment.NewLine}" +
-                    $"  at \"{rawRecord}\":column {column}{Environment.NewLine}" +
+                    $"  at \"{rawRecord?.TrimEnd('\r', '\n')}\"{Environment.NewLine}" +
+                    $"  at {path}:line {row}");
+            }
+            catch (HeaderValidationException e)
+            {
+                var error = e.Message.Split(Environment.NewLine)[0];
+                var rawRecord = e?.Context?.Reader?.Parser.RawRecord;
+                var row = e?.Context?.Reader?.Parser.Row;
+
+                Console.WriteLine($"Error on parse file. {error}{Environment.NewLine}" +
+                    $"  at \"{rawRecord?.TrimEnd('\r', '\n')}\"{Environment.NewLine}" +
                     $"  at {path}:line {row}");
             }
         }

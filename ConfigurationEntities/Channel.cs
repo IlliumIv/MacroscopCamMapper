@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace MacroscopCamMapper.ConfigurationEntities;
 
@@ -35,7 +34,8 @@ public class Channel
 
     private static double ToDouble(JToken token)
     {
-        try { return (double)token; }
+        try
+        { return (double)token; }
         catch { return 0; }
     }
 }

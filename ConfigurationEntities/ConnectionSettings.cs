@@ -11,7 +11,8 @@ public class ConnectionSettings(string channelId)
     {
         get
         {
-            if (string.IsNullOrEmpty(_modelId)) _modelId = GetModelId();
+            if (string.IsNullOrEmpty(_modelId))
+                _modelId = GetModelId();
             return _modelId;
         }
         set => _modelId = value;

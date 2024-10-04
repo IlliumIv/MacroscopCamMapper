@@ -8,7 +8,7 @@ public static class Parameters
     public static Parameter ShowHelpMessage { get; } =
         new(prefixes: ["--help", "-h", "-?"],
             format: string.Empty,
-            description: "Show this message and exit.",
+            descriptionFormatter: () => "Show this message and exit.",
             sortingOrder: 11,
             parser: (args) =>
             {
@@ -20,7 +20,7 @@ public static class Parameters
     public static Parameter ShowEncodings { get; } =
         new(prefixes: ["--show-encodings"],
             format: string.Empty,
-            description: "Show all possible encodings and exit.",
+            descriptionFormatter: () => "Show all possible encodings and exit.",
             sortingOrder: 9,
             parser: (args) =>
             {
@@ -35,7 +35,7 @@ public static class Parameters
     public static Parameter ShowCultures { get; } =
         new(prefixes: ["--show-cultures"],
             format: string.Empty,
-            description: "Show all possible cultures and exit.",
+            descriptionFormatter: () => "Show all possible cultures and exit.",
             sortingOrder: 9,
             parser: (args) =>
             {
@@ -49,7 +49,7 @@ public static class Parameters
 
     public static Parameter Export { get; } =
         new(prefixes: ["--export"],
-            description: "Export to file and exit. Overwrite file if it exists.",
+            descriptionFormatter: () => "Export to file and exit. Overwrite file if it exists.",
             format: "path",
             sortingOrder: 10,
             parser: (args) =>
@@ -63,7 +63,7 @@ public static class Parameters
         new(prefixes: ["--verbose", "-v"],
             value: false,
             format: string.Empty,
-            description: "Show verbose output.",
+            descriptionFormatter: () => "Show verbose output.",
             sortingOrder: 9,
             parser: (args) =>
             {
@@ -76,7 +76,7 @@ public static class Parameters
         new(prefixes: ["--server", "-s"],
             value: "127.0.0.1",
             format: "url",
-            description: "Server address. Default value is 127.0.0.1.",
+            descriptionFormatter: () => $"Server address. Current value is \"{Address?.Value}\".",
             parser: (args) =>
             {
                 if (Address is not null)
@@ -88,7 +88,7 @@ public static class Parameters
         new(prefixes: ["--port", "-p"],
             value: 8080,
             format: "number",
-            description: "Server port. Default value is 8080.",
+            descriptionFormatter: () => $"Server port. Current value is \"{Port?.Value}\".",
             parser: (args) =>
             {
                 if (Port is not null)
@@ -100,7 +100,7 @@ public static class Parameters
         new(prefixes: ["--ssl"],
             value: false,
             format: string.Empty,
-            description: "Connect over HTTPS.",
+            descriptionFormatter: () => $"Connect over HTTPS. Current value is \"{UseSSL?.Value}\".",
             parser: (args) =>
             {
                 if (UseSSL is not null)
@@ -112,7 +112,7 @@ public static class Parameters
         new(prefixes: ["--active-directory", "-ad"],
             value: false,
             format: string.Empty,
-            description: "Specify that is Active Directory user.",
+            descriptionFormatter: () => $"Specify that is Active Directory user. Current value is \"{IsActiveDirectoryUser?.Value}\".",
             sortingOrder: 2,
             parser: (args) =>
             {
@@ -125,7 +125,7 @@ public static class Parameters
         new(prefixes: ["--login", "-l"],
             value: "root",
             format: "string",
-            description: $"Login. Default value is \"root\". " +
+            descriptionFormatter: () => $"Login. Current value is \"{Login?.Value}\". " +
                 $"Must specify {string.Join(" or ", IsActiveDirectoryUser.Prefixes)} if using a Active Directory user.",
             parser: (args) =>
             {
@@ -138,7 +138,7 @@ public static class Parameters
         new(prefixes: ["--password"],
             value: string.Empty,
             format: "string",
-            description: "Password. Default value is empty string.",
+            descriptionFormatter: () => $"Password. Current value is \"{Password?.Value}\".",
             sortingOrder: 3,
             parser: (args) =>
             {
@@ -151,7 +151,7 @@ public static class Parameters
         new(prefixes: ["--names"],
             value: "Имя камеры",
             format: "string",
-            description: "Column header contains names of cameras. Default value is \"Имя камеры\".",
+            descriptionFormatter: () => $"Column header contains names of cameras. Current value is \"{Column_CameraName?.Value}\".",
             sortingOrder: 6,
             parser: (args) =>
             {
@@ -164,7 +164,7 @@ public static class Parameters
         new(prefixes: ["--channel-id"],
             value: "Channel Id",
             format: "string",
-            description: "Column header contains ids of channels. Default value is \"Channel Id\".",
+            descriptionFormatter: () => $"Column header contains ids of channels. Current value is \"{Column_ChannelId?.Value}\".",
             sortingOrder: 6,
             parser: (args) =>
             {
@@ -177,7 +177,7 @@ public static class Parameters
         new(prefixes: ["--latitude"],
             value: "Широта",
             format: "string",
-            description: $"Column header contains latitude. Default value is \"Широта\".",
+            descriptionFormatter: () => $"Column header contains latitude. Current value is \"{Column_Latitude?.Value}\".",
             sortingOrder: 6,
             parser: (args) =>
             {
@@ -190,7 +190,7 @@ public static class Parameters
         new(prefixes: ["--longitude"],
             value: "Долгота",
             format: "string",
-            description: "Column header contains longitude. Default value is \"Долгота\".",
+            descriptionFormatter: () => $"Column header contains longitude. Current value is \"{Column_Longitude?.Value}\".",
             sortingOrder: 6,
             parser: (args) =>
             {
@@ -203,7 +203,7 @@ public static class Parameters
         new(prefixes: ["--on-map"],
             value: "Размещена на карте",
             format: "string",
-            description: "Column header sets IsOnMap flag. Default value is \"Размещена на карте\". " +
+            descriptionFormatter: () => $"Column header sets IsOnMap flag. Current value is \"{Column_OnMap?.Value}\". " +
                 "Valid values: [true, yes, да]; in any letter case. Any other values either lack of value automatically set IsOnMap flag to false.",
             sortingOrder: 6,
             parser: (args) =>
@@ -217,7 +217,7 @@ public static class Parameters
         new(prefixes: ["--encoding"],
             value: Encoding.UTF8,
             format: "string",
-            description: $"File encoding. Default value is UTF-8. " +
+            descriptionFormatter: () => $"File encoding. Current value is \"{File_Encoding?.Value.HeaderName}\". " +
                 $"To see all possible encodings specify {string.Join(", ", ShowEncodings.Prefixes)}.",
             sortingOrder: 7,
             parser: (args) =>
@@ -231,7 +231,7 @@ public static class Parameters
         new(prefixes: ["--culture"],
             value: CultureInfo.InvariantCulture,
             format: "string",
-            description: $"File culture. Default value is InvariantCulture. " +
+            descriptionFormatter: () => $"File culture. Current value is \"{File_Culture?.Value.DisplayName} ({File_Culture?.Value.Name})\". " +
                 $"To see all possible cultures specify {string.Join(", ", ShowCultures.Prefixes)}.",
             sortingOrder: 7,
             parser: (args) =>
@@ -245,9 +245,9 @@ public static class Parameters
         new(prefixes: ["--delimeter"],
             value: ",",
             format: "string",
-            description: $"Columns delimeter." +
-                $" Default value is \"{File_Culture.Value.TextInfo.ListSeparator}\"." +
-                $" It depends on culture, current selected culture is {File_Culture.Value.DisplayName}.",
+            descriptionFormatter: () => $"Columns delimeter." +
+                $" Current value is \"{File_Culture.Value.TextInfo.ListSeparator}\"." +
+                $" It depends on culture, current selected culture is \"{File_Culture.Value.DisplayName} ({File_Culture?.Value.Name})\".",
             sortingOrder: 6,
             parser: (args) =>
             {
