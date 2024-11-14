@@ -29,11 +29,11 @@ public static class ArgumentsHandler
         {
             foreach (var p in parameters)
             {
-                foreach(var a in args)
+                for (var i = 0; i < args.Length; i++)
                 {
-                    if (p is not null && p.Prefixes.Any(p => p == a))
+                    if (p is not null && p.Prefixes.Any(p => p == args[i]))
                     {
-                        args = p.ParseArgs(args);
+                        args = p.ParseArgs(args, i);
                     }
                 }
             }
@@ -101,5 +101,18 @@ public static class ArgumentsHandler
 
         if (!string.IsNullOrEmpty(_footerDescription))
             Console.WriteLine($"\n{_footerDescription}");
+    }
+
+    // https://stackoverflow.com/a/457501/21231652
+    public static T[] RemoveAt<T>(this T[] source, int index, int skip)
+    {
+        T[] dest = new T[source.Length - skip];
+        if (index > 0)
+            Array.Copy(source, 0, dest, 0, index);
+
+        if (index < source.Length - skip)
+            Array.Copy(source, index + skip, dest, index, source.Length - index - skip);
+
+        return dest;
     }
 }

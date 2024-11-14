@@ -10,11 +10,11 @@ public static class Parameters
             format: string.Empty,
             descriptionFormatter: () => "Show this message and exit.",
             sortingOrder: 11,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 ArgumentsHandler.ShowHelp();
                 Environment.Exit(0);
-                return args[1..];
+                return args.RemoveAt(i, 1);
             });
 
     public static Parameter ShowEncodings { get; } =
@@ -22,14 +22,14 @@ public static class Parameters
             format: string.Empty,
             descriptionFormatter: () => "Show all possible encodings and exit.",
             sortingOrder: 9,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 Console.WriteLine(string.Join(", ", Encoding
                     .GetEncodings()
                     .Select(e => new[] { e.Name })
                     .SelectMany(e => e)));
                 Environment.Exit(0);
-                return args[1..];
+                return args.RemoveAt(i, 1);
             });
 
     public static Parameter ShowCultures { get; } =
@@ -37,14 +37,14 @@ public static class Parameters
             format: string.Empty,
             descriptionFormatter: () => "Show all possible cultures and exit.",
             sortingOrder: 9,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 Console.WriteLine(string.Join(", ", CultureInfo
                     .GetCultures(CultureTypes.AllCultures)
                     .Select(c => new[] { c.Name })
                     .Skip(1).SelectMany(c => c)));
                 Environment.Exit(0);
-                return args[1..];
+                return args.RemoveAt(i, 1);
             });
 
     public static Parameter Export { get; } =
@@ -52,11 +52,11 @@ public static class Parameters
             descriptionFormatter: () => "Export to file and exit. Overwrite file if it exists.",
             format: "path",
             sortingOrder: 10,
-            parser: (args) =>
+            parser: (args, i) =>
             {
-                ConfigurationEntities.Configuration.Export(args[1]);
+                ConfigurationEntities.Configuration.Export(args[i + 1]);
                 Environment.Exit(0);
-                return args[1..];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<bool> ShowVerbose { get; } =
@@ -65,11 +65,11 @@ public static class Parameters
             format: string.Empty,
             descriptionFormatter: () => "Show verbose output.",
             sortingOrder: 9,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (ShowVerbose is not null)
                     ShowVerbose.Value = true;
-                return args[1..];
+                return args.RemoveAt(i, 1);
             });
 
     public static Parameter<string> Address { get; } =
@@ -77,11 +77,11 @@ public static class Parameters
             value: "127.0.0.1",
             format: "url",
             descriptionFormatter: () => $"Server address. Current value is \"{Address?.Value}\".",
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Address is not null)
-                    Address.Value = args[1];
-                return args[2..];
+                    Address.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<ushort> Port { get; } =
@@ -89,11 +89,11 @@ public static class Parameters
             value: 8080,
             format: "number",
             descriptionFormatter: () => $"Server port. Current value is \"{Port?.Value}\".",
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Port is not null)
-                    Port.Value = ushort.Parse(args[1]);
-                return args[2..];
+                    Port.Value = ushort.Parse(args[i + 1]);
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<bool> UseSSL { get; } =
@@ -101,11 +101,11 @@ public static class Parameters
             value: false,
             format: string.Empty,
             descriptionFormatter: () => $"Connect over HTTPS. Current value is \"{UseSSL?.Value}\".",
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (UseSSL is not null)
                     UseSSL.Value = true;
-                return args[1..];
+                return args.RemoveAt(i, 1);
             });
 
     public static Parameter<bool> IsActiveDirectoryUser { get; } =
@@ -114,11 +114,11 @@ public static class Parameters
             format: string.Empty,
             descriptionFormatter: () => $"Specify that is Active Directory user. Current value is \"{IsActiveDirectoryUser?.Value}\".",
             sortingOrder: 2,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (IsActiveDirectoryUser is not null)
                     IsActiveDirectoryUser.Value = true;
-                return args[1..];
+                return args.RemoveAt(i, 1);
             });
 
     public static Parameter<string> Login { get; } =
@@ -127,11 +127,11 @@ public static class Parameters
             format: "string",
             descriptionFormatter: () => $"Login. Current value is \"{Login?.Value}\". " +
                 $"Must specify {string.Join(" or ", IsActiveDirectoryUser.Prefixes)} if using a Active Directory user.",
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Login is not null)
-                    Login.Value = args[1];
-                return args[2..];
+                    Login.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<string> Password { get; } =
@@ -140,11 +140,11 @@ public static class Parameters
             format: "string",
             descriptionFormatter: () => $"Password. Current value is \"{Password?.Value}\".",
             sortingOrder: 3,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Password is not null)
-                    Password.Value = args[1];
-                return args[2..];
+                    Password.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<string> Column_CameraName { get; } =
@@ -153,11 +153,11 @@ public static class Parameters
             format: "string",
             descriptionFormatter: () => $"Column header contains names of cameras. Current value is \"{Column_CameraName?.Value}\".",
             sortingOrder: 6,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Column_CameraName is not null)
-                    Column_CameraName.Value = args[1];
-                return args[2..];
+                    Column_CameraName.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<string> Column_ChannelId { get; } =
@@ -166,11 +166,11 @@ public static class Parameters
             format: "string",
             descriptionFormatter: () => $"Column header contains ids of channels. Current value is \"{Column_ChannelId?.Value}\".",
             sortingOrder: 6,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Column_ChannelId is not null)
-                    Column_ChannelId.Value = args[1];
-                return args[2..];
+                    Column_ChannelId.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<string> Column_Latitude { get; } =
@@ -179,11 +179,11 @@ public static class Parameters
             format: "string",
             descriptionFormatter: () => $"Column header contains latitude. Current value is \"{Column_Latitude?.Value}\".",
             sortingOrder: 6,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Column_Latitude is not null)
-                    Column_Latitude.Value = args[1];
-                return args[2..];
+                    Column_Latitude.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<string> Column_Longitude { get; } =
@@ -192,11 +192,11 @@ public static class Parameters
             format: "string",
             descriptionFormatter: () => $"Column header contains longitude. Current value is \"{Column_Longitude?.Value}\".",
             sortingOrder: 6,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Column_Longitude is not null)
-                    Column_Longitude.Value = args[1];
-                return args[2..];
+                    Column_Longitude.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<string> Column_OnMap { get; } =
@@ -206,11 +206,11 @@ public static class Parameters
             descriptionFormatter: () => $"Column header sets IsOnMap flag. Current value is \"{Column_OnMap?.Value}\". " +
                 "Valid values: [true, yes, да]; in any letter case. Any other values either lack of value automatically set IsOnMap flag to false.",
             sortingOrder: 6,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Column_OnMap is not null)
-                    Column_OnMap.Value = args[1];
-                return args[2..];
+                    Column_OnMap.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<Encoding> File_Encoding { get; } =
@@ -220,11 +220,11 @@ public static class Parameters
             descriptionFormatter: () => $"File encoding. Current value is \"{File_Encoding?.Value.HeaderName}\". " +
                 $"To see all possible encodings specify {string.Join(", ", ShowEncodings.Prefixes)}.",
             sortingOrder: 7,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (File_Encoding is not null)
-                    File_Encoding.Value = Encoding.GetEncoding(args[1]);
-                return args[2..];
+                    File_Encoding.Value = Encoding.GetEncoding(args[i + 1]);
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<CultureInfo> File_Culture { get; } =
@@ -234,11 +234,11 @@ public static class Parameters
             descriptionFormatter: () => $"File culture. Current value is \"{File_Culture?.Value.DisplayName} ({File_Culture?.Value.Name})\". " +
                 $"To see all possible cultures specify {string.Join(", ", ShowCultures.Prefixes)}.",
             sortingOrder: 7,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (File_Culture is not null)
-                    File_Culture.Value = new CultureInfo(args[1]);
-                return args[2..];
+                    File_Culture.Value = new CultureInfo(args[i + 1]);
+                return args.RemoveAt(i, 2);
             });
 
     public static Parameter<string> Column_Delimeter { get; } =
@@ -249,10 +249,10 @@ public static class Parameters
                 $" Current value is \"{File_Culture.Value.TextInfo.ListSeparator}\"." +
                 $" It depends on culture, current selected culture is \"{File_Culture.Value.DisplayName} ({File_Culture?.Value.Name})\".",
             sortingOrder: 6,
-            parser: (args) =>
+            parser: (args, i) =>
             {
                 if (Column_Delimeter is not null)
-                    Column_Delimeter.Value = args[1];
-                return args[2..];
+                    Column_Delimeter.Value = args[i + 1];
+                return args.RemoveAt(i, 2);
             });
 }

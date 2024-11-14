@@ -10,9 +10,9 @@ public class Parameter
     private readonly Func<string> _descriptionFormatter;
     public string Description() => _descriptionFormatter();
 
-    private readonly Func<string[], string[]> _argsParser;
-    internal string[] ParseArgs(string[] args)
-        => _argsParser(args);
+    private readonly Func<string[], int, string[]> _argsParser;
+    internal string[] ParseArgs(string[] args, int i)
+        => _argsParser(args, i);
 
     /// <summary>
     /// Iinitializes the new Parameter.
@@ -30,7 +30,7 @@ public class Parameter
     /// <param name="isRequired">Should be true if program can not do work while user not specify this parameter.</param>
     /// <param name="sortingOrder">Оrder of sorting. Used to order params on help and set priority of params while handle command line arguments. Biggest is later.</param>
 #pragma warning disable IDE0290 // Use primary constructor
-    public Parameter(string[] prefixes, string format, Func<string[], string[]> parser,
+    public Parameter(string[] prefixes, string format, Func<string[], int, string[]> parser,
 #pragma warning restore IDE0290 // Use primary constructor
         Func<string> descriptionFormatter, bool isRequired = false, int sortingOrder = 1)
     {
@@ -43,7 +43,7 @@ public class Parameter
     }
 }
 
-public class Parameter<T>(string[] prefixes, T value, string format, Func<string[], string[]> parser,
+public class Parameter<T>(string[] prefixes, T value, string format, Func<string[], int, string[]> parser,
     Func<string> descriptionFormatter, bool isRequired = false, int sortingOrder = 1)
     : Parameter(prefixes, format, parser, descriptionFormatter, isRequired, sortingOrder) where T : notnull
 {
