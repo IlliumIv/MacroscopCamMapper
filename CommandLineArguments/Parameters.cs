@@ -151,7 +151,7 @@ public static class Parameters
         new(prefixes: ["--names"],
             value: "Имя камеры",
             format: "string",
-            descriptionFormatter: () => $"Column header contains names of cameras. Current value is \"{Column_CameraName?.Value}\".",
+            descriptionFormatter: () => $"Header of column that contains names of cameras. Current value is \"{Column_CameraName?.Value}\".",
             sortingOrder: 6,
             parser: (args, i) =>
             {
@@ -164,7 +164,7 @@ public static class Parameters
         new(prefixes: ["--channel-id"],
             value: "Channel Id",
             format: "string",
-            descriptionFormatter: () => $"Column header contains ids of channels. Current value is \"{Column_ChannelId?.Value}\".",
+            descriptionFormatter: () => $"Header of column that contains ids of channels. Current value is \"{Column_ChannelId?.Value}\".",
             sortingOrder: 6,
             parser: (args, i) =>
             {
@@ -177,7 +177,7 @@ public static class Parameters
         new(prefixes: ["--latitude"],
             value: "Широта",
             format: "string",
-            descriptionFormatter: () => $"Column header contains latitude. Current value is \"{Column_Latitude?.Value}\".",
+            descriptionFormatter: () => $"Header of column that contains latitude. Current value is \"{Column_Latitude?.Value}\".",
             sortingOrder: 6,
             parser: (args, i) =>
             {
@@ -190,7 +190,7 @@ public static class Parameters
         new(prefixes: ["--longitude"],
             value: "Долгота",
             format: "string",
-            descriptionFormatter: () => $"Column header contains longitude. Current value is \"{Column_Longitude?.Value}\".",
+            descriptionFormatter: () => $"Header of column that contains longitude. Current value is \"{Column_Longitude?.Value}\".",
             sortingOrder: 6,
             parser: (args, i) =>
             {
@@ -203,7 +203,7 @@ public static class Parameters
         new(prefixes: ["--on-map"],
             value: "Размещена на карте",
             format: "string",
-            descriptionFormatter: () => $"Column header sets IsOnMap flag. Current value is \"{Column_OnMap?.Value}\". " +
+            descriptionFormatter: () => $"Header of column that sets IsOnMap flag. Current value is \"{Column_OnMap?.Value}\". " +
                 "Valid values: [true, yes, да]; in any letter case. Any other values either lack of value automatically set IsOnMap flag to false.",
             sortingOrder: 6,
             parser: (args, i) =>
@@ -247,7 +247,7 @@ public static class Parameters
             format: "string",
             descriptionFormatter: () => $"Columns delimeter." +
                 $" Current value is \"{File_Culture.Value.TextInfo.ListSeparator}\"." +
-                $" It depends on culture, current selected culture is \"{File_Culture.Value.DisplayName} ({File_Culture?.Value.Name})\".",
+                $" By default it depends on culture, current selected culture is \"{File_Culture.Value.DisplayName} ({File_Culture?.Value.Name})\".",
             sortingOrder: 6,
             parser: (args, i) =>
             {
