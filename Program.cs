@@ -47,24 +47,44 @@ public class Program
                 if (Configuration.GetConfiguration(out var configuration))
                 {
                     var channelsToModify = new HashSet<Channel>();
-                    var camerasNotModified = new HashSet<Camera>();
+                    var camerasIgnored = new HashSet<(Camera Camera, string Reason)>();
 
                     foreach (var camera in cameras)
-                    {
-                        var channel = configuration.Channels.SingleOrDefault(c => c.Id == camera.ChannelId);
-                        channel ??= configuration.Channels.SingleOrDefault(c => c.Name == camera.Name);
-
-                        if (channel is null)
+                    {                        
+                        try
                         {
-                            camerasNotModified.Add(camera);
-                            continue;
+                            var channels = configuration.Channels.Where(c => c.Id == camera.ChannelId);
+
+                            if (!channels.Any())
+                            {
+                                channels = configuration.Channels.Where(c => c.Name == camera.Name);
+                            }
+
+                            if (!channels.Any())
+                            {
+                                camerasIgnored.Add((camera, "Not Found"));
+                                continue;
+                            }
+
+                            if (channels.Count() > 1)
+                            {
+                                camerasIgnored.Add((camera, "Duplicate "));
+                                continue;
+                            }
+
+                            var channel = channels.First();
+
+                            channel.MapSettings.Latitude = camera.Latitude;
+                            channel.MapSettings.Longitude = camera.Longitude;
+                            channel.MapSettings.IsOnMap = camera.GetIsOnMapFlag();
+
+                            channelsToModify.Add(channel);
                         }
-
-                        channel.MapSettings.Latitude = camera.Latitude;
-                        channel.MapSettings.Longitude = camera.Longitude;
-                        channel.MapSettings.IsOnMap = camera.GetIsOnMapFlag();
-
-                        channelsToModify.Add(channel);
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Error on processing {camera.Name} {camera.ChannelId}:");
+                            Console.WriteLine(e.StackTrace);
+                        }
                     }
 
                     var request = new HttpRequestMessage(HttpMethod.Put, "configure/channels");
@@ -86,10 +106,10 @@ public class Program
                         }
                     }
 
-                    if (camerasNotModified.Count > 0)
+                    if (camerasIgnored.Count > 0)
                     {
-                        Console.WriteLine("These cameras has been ignored ({0}):{2}{1}{2}", camerasNotModified.Count,
-                                JsonConvert.SerializeObject(camerasNotModified, formatting: Formatting.Indented), Environment.NewLine);
+                        Console.WriteLine("These cameras has been ignored ({0}):{2}{1}{2}", camerasIgnored.Count,
+                                JsonConvert.SerializeObject(camerasIgnored, formatting: Formatting.Indented), Environment.NewLine);
                     }
                 }
             }
